@@ -18,7 +18,7 @@ const isValid = (username)=>{
 
 const authenticatedUser = (username,password)=>{ //returns boolean
     if (isValid(username)){
-        for(const user in users){
+        for(const user of users){
             if(user.username == username)
                 if(user.password == password) 
                     return true;
@@ -32,8 +32,14 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const {username, password} = req.body;
+    if (authenticatedUser(username, password)){
+        const token = jwt.sign(password, "theSecretKey");
+        req.session.authorization = {token, username};
+        return res.status(200).json({message: "User successfully logged in"});
+    }
+    else
+        return res.status(208).json({message: "Invalid Login. Please check username and password."});
 });
 
 // Add a book review
