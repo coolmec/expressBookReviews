@@ -39,26 +39,33 @@ public_users.get('/isbn/:isbn',function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
     const author = req.params.author;
-    const getAuthorBooks = new Promise((resolve, reject)=> {
-        const booksList = Object.entries(books);
+    const getBooks = new Promise((resolve, reject)=> {
+        resolve(books);
+    })
+    getBooks.then(data => {
+        const booksList = Object.entries(data);
         const authorBooks = [];
         for (const [key,book] of booksList) {
             if (book.author == author)
                 authorBooks.push(book);        
         }
-        resolve(authorBooks);
-    })
-    getAuthorBooks.then(data => {return res.send(JSON.stringify(data,null,4));});
+        return res.send(JSON.stringify(authorBooks,null,4));
+    });
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
     const title = req.params.title;
-    const booksList = Object.entries(books);
-    for (const [key,book] of booksList) {
-        if (book.title == title)
-            return res.send(JSON.stringify(book, null, 4));
-    }
+    const getBooks = new Promise((resolve, reject)=> {
+        resolve(books);
+    })
+    getBooks.then(data => {
+        const booksList = Object.entries(data);
+        for (const [key,book] of booksList) {
+            if (book.title == title)
+                return res.send(JSON.stringify(book, null, 4));
+        }
+    });
 });
 
 //  Get book review
